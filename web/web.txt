@@ -1,0 +1,54 @@
+cmd 편의상 경로 설정 : cd C:\web\jetsonApp
+
+1. 웹설치 (node.js / npm)
+
+	#node.js npm 설치 
+	$ curl -sL https://deb.nodesource.com/setup_10.x | sudo bash -
+	$ apt install nodejs
+
+	#npm을 이용하여 express-generator 설치(express는 기본뼈대를 만들어줌)
+	$ npm install express-generator -g
+
+	#express를 이용하여 기본템플릿 만들기
+	$ cd ~
+	$ mkdir web
+	$ cd web
+	$ express jetsonApp --ejs
+	$ cd jetsonApp
+
+	#내 프로젝트에 npm(nodejs package manager)설치, 필요 기능들 설치
+	$ npm install	
+	$ npm install body-parser
+	$ npm install nodemon -g
+	$ npm install nodemailer
+
+	#부트스트랩 다운 http://bootstrapk.com/getting-started/#download
+	#다운받아진 3개의 폴더(js, css, fonts) -> jetsonApp/public 경로로 옮기기	
+
+	#테스트해보기
+	$ npm start
+		 http://localhost:3000/로 접속하면 뜸
+
+
+2. 추가 기능 설명
+	#npm기능중 nodemon은 스크립트가 수정될때마다 사이트를 동적으로 갱신시켜준다
+	#.jpg 파일에 추가가 있을때마다 갱신을 해줘야하므로 따로 설정해줌 -e옵션을 준다.
+	$ vi /jetsonApp/package.json
+	
+		{
+		  "name": "jetsonapp",
+		  "version": "0.0.0",
+		  "private": true,
+		  "scripts": {
+		    "start": "nodemon -e jpg ./bin/www "  <-이부분
+		  },
+		  "dependencies": {
+		    "cookie-parser": "~1.4.4",
+		    "debug": "~2.6.9",
+		    "ejs": "~2.6.1",
+		    "express": "~4.16.1",
+		    "http-errors": "~1.6.3",
+		    "morgan": "~1.9.1"
+		  }
+		}
+

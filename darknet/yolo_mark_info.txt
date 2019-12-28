@@ -1,0 +1,112 @@
+#참조 https://developer-thislee.tistory.com/19?category=818795
+      https://developer-thislee.tistory.com/18?category=818795
+#원하는 weight file을 만들기 위해 전처리 과정으로 라벨링작업을 해야함.
+
+git에서 install file 받기
+$ git clone https://github.com/AlexeyAB/Yolo_mark
+$ cd Yolo_mark
+$ cmake .
+$ make
+
+#실행되나 테스트
+$ ./linux_mark.sh (실행 안되면 권한주기 chmod 700 linux_mark.sh)
+
+#img폴더안에 사진 모두 삭제하고 트레이닝 하고싶은 사진 넣기 (*jpg파일만 지원함*)
+$ cd x64/Release/data/img 
+
+#training data에 맞게 설정 수정
+$ cd .. (경로 : x64/Release/data/)
+$ vi obj.data #object개수 설정해주기
+     -> classes= 3  ###detecting할 이미지 개수설정 (개, 고양이, 돼지 -> classes = 3)
+	train  = data/train.txt
+	valid  = data/train.txt
+	names = data/obj.names
+	backup = backup/
+
+$ vi obj.names #object name 설정해주기(object detecting할때 표시될 이름)
+	dog  #문자들 다지우고, object name하나당 "enter"
+	cat
+	pig
+	
+
+#Yolo_mark폴더로가서 object detecting할 부분 라벨링 해주기 
+$ ./linux_mark.sh
+# 마우스 드래그로 사진에 박스를 그려주고 상단에 object id를 알맞게 설정
+# dog=0 cat=1 pig=2 이런식으로 obj.names을 수정했던 object순서대로임
+
+     팁 - 키보드 자판 h 를 눌러서, 단축키를 확인할 수 있습니다.
+	- 스페이스 바( Space Bar )를 누르면 다음 이미지로 이동이 가능합니다.
+	- c 는 현재 보고 있는 이미지의 라벨링을 초기화시켜줍니다.
+	- 0~9까지 눌러서 원하는 object(클래스)로 적용할 수 있다.
+
+#라벨링 끝나면 콘솔에서 Ctrl+c로 종료
+#라벨링 작업으로 인해 Yolo_mark/x64/Release/data/img 경로에 사진마다 txt파일 생성되어있음 궁금하면 확인
+
+
+#설정한 파일들 darknet으로 복사해주기
+yolo_mark/x64/Release/data 경로안에 있는 img, obj.names , obj.data , train.txt -> darknet/data/
+
+#train.txt파일 내용 수정하기 
+$vi train.txt
+#vi편집기로 들어온 상태에서 ":"(콜론)키 누르고 %s/x64\/Release\///i 입력
+	ex) x64/Release/data/img/image1.jpg
+		      ->data/img/image1.jpg
+
+#데이터 학습을 위한 cfg수정
+#darknet/cfg 경로로 이동
+$ vi yolo-obj.cfg (대략 689, 696 / 776, 783 줄 똑같이 수정 )
+ 
+	stride=1
+	pad=1
+     -> filters=21    ###yolov2( filters = 5 * (classes+5) 수정)
+		      ###yolov3( filters = 3 * (classes+5) 수정)
+	activation=linear
+
+	[region]
+	anchors = 1.08,1.19,  3.42,4.41,  6.63,11.38,  9.42,5.11,  16.62,10.52
+	bias_match=1
+     -> classes=2     ###(분류한 객체수 수정)
+	coords=4
+	num=5
+	softmax=1
+	jitter=.2
+	rescore=1
+
+
+#darknet에서 지원하는 convolutional layers 받아서 darknet폴더에 저장
+wget https://pjreddie.com/media/files/darknet53.conv.74
+
+
+#학습시작
+#gpu가 2개일 경우는 -gpus 0,1 을 써줘야 함! 중요한 건, gpus 0, 1 에서 0과 1을 띄어쓰기하면 안 됨 
+$ cd darknet
+$ ./darknet detector train data/obj.data cfg/yolov3.cfg darknet53.conv.74 -gpu 0 
+
+
+#실행 도중 아래와 같은 오류가 난다면, 
+	CUDA Error: out of memory
+	darknet: ./src/cuda.c:36: check_error: Assertion `0' failed.
+# cfg/yolov3.cfg 파일에서 subdivision 값과 height, width를 적절히 수정해주면 된다.
+# subdivision을 증가 / height, width를 감소 
+
+#darknet/backup폴더로 이동하면 .weights파일을 생성됨 
+
+이미지 파일 테스트는, 아래처럼 실행하면 됩니다. ( 세 번째 줄이 최종 명령어 )
+./darknet detector test data/obj.data cfg/yolov3.cfg backup/(가중치 파일) (이미지 경로)/(이미지파일.jpg)
+./darknet detector test data/obj.data cfg/yolov3.cfg backup/(yolov3_16800.weights) (data/img)/(sample_image.jpg)
+./darknet detector test data/obj.data cfg/yolov3.cfg backup/yolov3_16800.weights data/img/sample_image.jpg
+ 
+
+동영상 파일 테스트는,
+./darknet detector demo data/obj.data cfg/yolov3.cfg backup/(가중치 파일) (동영상 경로)/(동영상 파일)
+( 동영상 확장자도 잊지 말고 같이 써주자. ex) .mp4 )
+./darknet detector demo data/obj.data cfg/yolov3.cfg backup/(yolov3_16800.weights) (data/media)/(example.mp4)
+./darknet detector demo data/obj.data cfg/yolov3.cfg backup/yolov3_16800.weights data/media/example.mp4
+ 
+
+테스트 웹캠은,
+./darknet detector demo data/obj.data cfg/yolov3.cfg backup/(가중치 파일)
+./darknet detector demo data/obj.data cfg/yolov3.cfg backup/(yolov3_16800.weights)
+./darknet detector demo data/obj.data cfg/yolov3.cfg backup/yolov3_16800.weights "nvarguscamerasrc ! video/x-raw(memory:NVMM), width=(int)1280, height=(int)720, format=(string)NV12, framerate=(fraction)30/1 ! nvvidconv flip-method=4 ! video/x-raw, format=(string)BGRx ! videoconvert ! video/x-raw, format=(string)BGR ! appsink"
+
+

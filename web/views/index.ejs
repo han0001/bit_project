@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">  
+    <script src = "/js/bootstrap.min.js"></script>
+	<script src = "/javascripts/main.js"></script>
+	
+	<link rel="stylesheet" href="/css/bootstrap-theme.min.css">	
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body>
+<style>
+  #my_btn:hover {
+    color: gray;
+    cursor: pointer; 
+  }
+</style>
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="#">Project name</a>
+			</div>
+			<div id="navbar" class="navbar-collapse collapse">
+				<form class="navbar-form navbar-right">
+					<div class="form-group">
+						<input type="text" placeholder="Email" class="form-control">
+					</div>
+					<div class="form-group">
+						<input type="password" placeholder="Password" class="form-control">
+					</div>
+					<button type="submit" class="btn btn-success">Sign in</button>
+				</form>
+			</div>
+			<!--/.navbar-collapse -->
+		</div>
+	</nav>
+
+	<div style="padding:30px;">	</div>	
+	<div style="padding:30px;">
+		<input type="button" value="show camera" onclick="window.open('http://localhost:8090/', 'real time streaming', 'width=600, height=600')" >
+		<input type="button" value="show camera" onclick="window.open('http://localhost:7780/', 'real time streaming', 'width=600, height=600')" >
+	</div>			
+		
+	
+	<div class="jumbotron" style="padding:30px;">
+		<div class="container">			
+    			<img id="image_container" class="img-responsive center-block" alt="" width="30%" height="10%">
+		</div>
+	</div>
+
+
+
+<!-- 	<div style="padding:10px;"> </div>
+		<div class="jumbotron" style="padding:50px;">
+			<% for(var i = 0; i<3; i++) { %>				
+				<button type="button" class="btn btn-default btn-lg" id="myButton">mode <%=i%></button>
+			<% } %>
+			<span class="label label-default" id="label00" value="hi"><%=aaa%></span>
+		</div>
+	</div> -->
+
+	<div class="container">
+
+		<div style="padding:30px;">
+			<div class="row">
+				<p style="float:left; margin-right:10px;" ><strong>Mode Select</strong></p>
+				<span class="label label-success style=float:right" id="mode_lable"></span>
+			</div>
+		</div>		
+
+		<div class="container bg-secondary" id="mode_cont" style="width: 80%;" >	
+			<button type="button" class="btn btn-default btn-lg" id="myButton" value="100">일반모드</button>
+			<button type="button" class="btn btn-default btn-lg" id="myButton" value="305">수동모드</button>
+			<button type="button" class="btn btn-default btn-lg" id="myButton" value="990">정지</button>
+
+			<button type="button" class="btn btn-default btn-lg pull-right" id="myButton" value="999">관리자모드</button>
+		</div>
+
+		<div class="container bg-secondary" id="mode_men" style="width: 80%;" >	
+			<button type="button" class="btn btn-default btn-lg" id="myButton" value="110">감지on</button>
+			<button type="button" class="btn btn-default btn-lg" id="myButton" value="100">감지off</button>
+			<button type="button" class="btn btn-default btn-lg" id="myButton" value="900">일시정지</button>
+			<button type="button" class="btn btn-danger btn-lg" id="myButton" value="990">일반종료</button>
+		</div>
+
+		<div style="padding:30px;"></div>
+			
+		<div class="container bg-secondary" id="joystick_cont" style="width: 80%;" >			
+			<div class="container pull-left" style="width: 30%;">
+				<div class="row">
+					<button class="glyphicon glyphicon-arrow-up btn btn-primary col-xs-12" id="mode3btn" value="301"></button>
+				</div>
+				<div class="row">
+					<button class="glyphicon glyphicon-arrow-left btn btn-primary col-sm-6 col-md-3" id="mode3btn" value="302"></button>
+					<button class="glyphicon glyphicon-pause btn btn-primary col-sm-6" id="mode3btn" value="305"></button>
+					<button class="glyphicon glyphicon-arrow-right btn btn-primary col-md-3" id="mode3btn" value="303"></button>
+				</div>	
+				<div class="row last-row">
+					<button class="glyphicon glyphicon-arrow-down btn btn-primary col-xs-12" id="mode3btn" value="304"></button>
+				</div>
+			</div>	
+
+			<div class="container pull-right" style="width: 20%;">		
+				<div class="row last-row">
+					<button class="btn btn-danger col-xs-12" id="mode3btn" value="999">수동종료</button>
+				</div>
+			</div>	
+			<div class="container pull-right" style="width: 20%;">		
+				<div class="row">
+					<button class="btn btn-default btn-lg col-xs-12" id="mode3btn" value="310">추적 ON</button>
+				</div>
+				<div class="row">
+					<button class="btn btn-default btn-lg col-xs-12" id="mode3btn" value="305">추적 OFF</button>
+				</div>
+			</div>				
+		</div>
+
+		<div style="padding:50px;"></div>
+	
+
+
+
+		<div style="padding:85px;"></div>
+		<p><strong>event image</strong></p>
+		<% bbb.forEach(p => { %> 
+			<label id ="my_btn" class="container list-group-item  list-group-item-action"><%=p%></label>
+		<% }) %>
+	</div>
+
+	<div style="padding:20px;"> </div>		
+
+
+	<!-- ################################################################################################################ -->
+	<!-- ################################################################################################################ -->
+
+	<script>
+		window.onload = init;
+
+		const mybtn = document.querySelectorAll('#my_btn');//[my_btn,mybtn];
+
+		const image_container = document.querySelector("#image_container");
+		const modelable = document.getElementById('mode_lable');
+
+		const joystick_cont = document.getElementById('joystick_cont');
+		const mode_cont = document.getElementById('mode_cont');
+		const mode_men = document.getElementById('mode_men');
+		
+		
+		mybtn.forEach((p)=>{
+			p.addEventListener("click", myBtnOnclickLister);
+		})
+		
+		function myBtnOnclickLister (event){
+			var targetElement = event.target || event.srcElement;
+			console.dir(targetElement.innerHTML)
+			image_container.removeAttribute('src')
+			image_container.setAttribute( 'src','/images/'+targetElement.innerHTML )			
+		}		
+
+		//모드 버튼 그룹화 후 클릭함수 적용
+		const mode3btn = document.querySelectorAll('#mode3btn');
+		mode3btn.forEach((item)=>{
+			item.addEventListener('click',ModeWrite)
+		});		
+
+		//모드 버튼 그룹화 후 클릭함수 적용
+		const btns = document.querySelectorAll('#myButton')
+		btns.forEach((item)=>{
+			item.addEventListener('click',ModeWrite)
+		});		
+
+
+		//모드버튼값 서버로 전송
+		function ModeWrite(event){
+			var data = event.target.value || String ()
+			var id = event.target.id || String ()
+			var context = event.target.textContent || String ()
+			console.log(data)
+			modelable_write(data, context)	
+			fetch("/ModeWrite", { //fetch 서버로 전송 부분
+						method: "POST",
+						headers: { "Content-Type": "application/json; charset=utf-8"},
+						body: JSON.stringify({mode : data})
+			})
+		}	
+
+		function init(){
+			ModeRead()
+			joystick_cont.style.display="none"
+			mode_cont.style.display="block"	
+			mode_men.style.display="none"		
+
+
+		}
+
+		//서버로 부터 모드 읽기
+		function ModeRead(event){
+			fetch("/ModeRead", { //fetch 서버로 전송 부분
+						method: "POST",
+						headers: { "Content-Type": "application/json; charset=utf-8"},
+						body: null
+			}).then(response => {// 서버로 부터 받은 부분
+				response.json().then(jsonData =>{	
+				modelable_write(jsonData)
+				console.log("dfgdfgd")
+				console.log(jsonData.toString())
+				})
+			})
+		 }
+		
+		 function modelable_write(data, context){
+
+			if(context=="일반종료")	{sudongEvent(0)
+			}else if(context=="수동종료"){sudongEvent(0)
+			}else if(context=="일반모드"){sudongEvent(2)
+			}else if(context=="수동모드"){sudongEvent(1)}
+
+			modelable.textContent = context			
+
+		}
+
+
+		function sudongEvent(click_val){
+			if(click_val == 2){ //일반
+				joystick_cont.style.display="none"
+				mode_cont.style.display="none"	
+				mode_men.style.display="block"					
+			}		
+			else if(click_val == 1){ //수동
+				joystick_cont.style.display="block"
+				mode_cont.style.display="none"
+				mode_men.style.display="none"	
+			}else if(click_val == 0){	//메인	
+				joystick_cont.style.display="none"
+				mode_cont.style.display="block"	
+				mode_men.style.display="none"	
+			}		
+		}
+
+
+
+	</script>  
+  </body>
+  <script src = "/js/bootstrap.min.js"></script>
+</html>

@@ -1,0 +1,71 @@
+
+coco dataset : 딥러닝 학습을 위한 데이터셋으로 이미지들의 집합을 제공해줌
+annotation : coco dataset의 주석, json형식으로 label이 포함되어 있다.
+ 	      그러므로 이를 파싱하여 필요한 이미지의 좌표,크기,클래스 등을 추출해 낼수 있다.
+cocoapi : annotation을 편리하게 파싱할수 있도록 제공하는 api로 파이썬(.ipynb)기반임 
+		
+		아래url은 anotation의 format을 자세히 알려준다. 
+			https://wordbe.tistory.com/entry/COCO-dataset
+			http://www.immersivelimit.com/tutorials/create-coco-annotations-from-scratch
+
+
+
+
+
+os : ubuntu18.04
+
+#cocoapi다운받기
+	$ pip install cython
+	$ git clone https://github.com/cocodataset/cocoapi.git
+	$ cd PythonAPI
+	$ make
+
+#window의 오류가 발생하기 때문에 setup.py를 수정해야한다.
+	extra_compile_args=['-Wno-cpp', '-Wno-unused-function', '-std=c99']
+	를 아래처럼 수정
+	extra_compile_args={'gcc': ['/Qstd=c99']
+
+
+#수정이 완료가 되었다면 make를 진행하면 된다.(오류시 관리자 권한으로 실행)
+	$ python setup.py build_ext install
+	$ python setup.py build_ext --inplace
+
+#image(coco)와 annotations 파일 다운받기 (url : http://cocodataset.org/#download)
+	image(coco)와 Annotations 같은 이름으로 다운	
+	ex)
+		Images(coco)
+		2017 Val images [5K/1GB]
+
+		Annotations
+		2017 Train/Val annotations [241MB]
+
+#cocodata를 위한 패키지 추가
+	$ pip install numpy
+	$ pip install scikit-image
+	$ pip install matplotlib
+
+#jupyter notebook설치와 접속(주피터관련 설치이상있을 시 구글링으로 해결)
+	$ sudo pip install notebook
+	$ jupyter notebook
+
+
+#jupyter notebook을 통해 cocoapi로 접근(둘중하나 선택) 
+	-pycocoDemo파일에 접근한다.
+		path : cocoapi/PythonAPI/pycocoDemo
+	-darknet yolov3학습을 위한 포맷의 label이 필요하다면 본인이 수정한 pycocoDemo_darknetYolov3로 접근 
+		pycocoDemo_darknetYolov3을 cocoapi/PythonAPI/ 경로에 복붙.
+		(설명은 코드에 있음)
+		
+
+
+
+
+
+
+
+
+
+
+
+
+

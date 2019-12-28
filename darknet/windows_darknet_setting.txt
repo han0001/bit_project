@@ -1,0 +1,114 @@
+﻿윈도우에서 darknet build하기
+개발환경
+	- os : windows10
+	- hw : graphic_card(rtx2070)
+	- sw : cuda10.0
+	        cudnn v7.6.5.32 for cuda10.0
+	        opencv 4.1.1
+	        visual studio 2015 140v 8.1sdk
+
+!!순서 중요!!
+#visual studio 설치
+	https://docs.microsoft.com/ko-kr/visualstudio/releasenotes/vs2015-version-history
+	로그인후 [visual studio community 2015 update3] 다운,설치
+
+#cuda
+	https://developer.nvidia.com/cuda-toolkit-archive
+	[CUDA Toolkit 10.0 (Sept 2018), Online Documentation] 기본경로에 설치
+
+# cudnn설치
+	-https://developer.nvidia.com/rdp/cudnn-download
+	-로그인 후 Archived cuDNN releases 선택
+	-[cuDNN v7.6.5 (November 5th, 2019), for CUDA 10.0] 다운
+	-로컬c에 저장
+	-압축풀기 -> bin,inclue,lib폴더 안에있는 파일들(.dll  .lib  .h)
+			-> C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.0\ bin,include, lib 같은 경로에 복붙
+	-환경변수 설정
+		변수이름 : cudnn
+		변수 값 : C:\cudnn-10.0-windows10-x64-v7.6.5.32\cuda (참조용, 알맞는 경로 설정)
+	
+#opencv설치
+	https://opencv.org/releases/
+	[OpenCV – 4.0.1 / windows] 경로 외워두고 설치 ex) C:\opencv\opencv_v4.0.1 (4.1.1도 될듯)
+	-환경변수 설정
+		변수이름 : OPENCV_DIR
+		변수 값 : C:\opencv\opencv_v4.0.1\build (참조용, 알맞는 경로 설정)	
+
+#git에서 다크넷 윈도우 버전 다운
+	https://github.com/AlexeyAB/darknet/ 에서 다운
+
+#visual studio프로젝트 설정 및 빌드
+	- ex) C:\darknet-master\darknet-master\build\darknet 경로의 darknet.sln파일 실행
+	- 구성 : Debug / 플랫폼 :x64  (상단메뉴바 바로아래 위치)
+	- 솔루션 탐색기 -> darknet 오른쪽클릭 -> 속성 
+		-구성 : Debug / 플랫폼 :x64 
+		-구성속성 -> c/c++ -> 일반 -> 추가 포함 디렉터리 ->편집
+			추가 할거 없음 확인만	
+			C:\opencv\opencv_v4.0.1\build\include
+			C:\opencv_3.0\opencv\build\include
+			..\..\include
+			..\..\3rdparty\stb\include
+			..\..\3rdparty\pthreads\include
+			%(AdditionalIncludeDirectories)
+			C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.0\include
+			C:\cudnn-10.0-windows10-x64-v7.6.5.32\cuda\include
+		-구성속성 -> c/c++ -> 전처리기 ->
+			전처리기 정의 해제 -> OPENCV 지우기
+			전처리기 정의 -> OPENCV 추가
+		-구성속성 -> CUDA C/C++ -> Device ->
+			Code Generation -> compute_75,sm_75  (rtx2070에 맞는 코드임 구글링해서 해당 그래픽카드에 맞게 설정)
+			(혹시 이 메뉴가 존재하지 않으면 cuda와 visual studio 호환이 되지 않은 것 이므로
+			https://studyingcoder.blogspot.com/2019/04/open-source-yolo-v3.html 참조)
+
+		-구성속성 -> 링커 -> 일반 -> 추가 라이브러리 디렉터리 -> 편집
+			추가 할거 없음 확인만
+			C:\opencv\opencv_v4.0.1\build\x64\vc15\lib
+			C:\opencv\opencv_v4.0.1\build\x64\vc14\lib
+			C:\opencv_3.0\opencv\build\x64\vc14\lib
+			C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.0\lib\x64
+			C:\cudnn-10.0-windows10-x64-v7.6.5.32\cuda\lib\x64
+			..\..\3rdparty\pthreads\lib
+			%(AdditionalLibraryDirectories)
+
+		-구성속성 -> 링커 -> 입력 -> 추가 종속성  -> 편집
+			C:\opencv\opencv_v4.0.1\build\x64\vc14\bin\ 경로안에 있는 파일
+			"opencv_world401d.dll" ->  "opencv_world401d.lib"(.dll -> .lib로 이름 수정해서 넣기)
+			확인
+			pthreadVC2.lib
+			cublas.lib
+			curand.lib
+			cudart.lib
+			opencv_world401d.lib
+			%(AdditionalDependencies)
+
+	-필요파일 추가 C:\darknet-master\darknet-master01\build\darknet\x64 경로로 이동하여 해당 파일들 모두 복붙
+
+		opencv_world401.dll       (opencv폴더에서 검색)
+		opencv_ffmpeg401_64.dll
+    		ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+		cusolver64_100.dll            (cuda폴더 에서 검색)
+		curand64_100.dll
+		cudart64_100.dll
+		cublas64_100.dll
+
+	-빌드 -> 솔루션 빌드 
+	
+
+#다크넷 weight파일 다운
+	#wieght파일
+	- https://pjreddie.com/darknet/yolo/
+		[YOLOv3-416	COCO trainval	test-dev	55.3	65.86 Bn	35	cfg	weights]
+		[YOLOv3-tiny	COCO trainval	test-dev	33.1	5.56 Bn	220	cfg	weights]
+	-C:\darknet-master\darknet-master01\build\darknet\x64경로안에 해당 weight파일 다운
+
+
+
+사진
+darknet detector test data/coco.data cfg/yolov3-tiny.cfg yolov3-tiny.weights data/dog.jpg
+
+캠
+darknet detector demo data/coco.data cfg/yolov3-tiny.cfg yolov3-tiny.weights
+
+영상
+darknet detector demo data/coco.data cfg/yolov3-tiny.cfg yolov3-tiny.weights test.avi (test.avi 별도로 다운받아야함)
+

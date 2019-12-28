@@ -1,0 +1,42 @@
+# 참조
+# https://pjreddie.com/darknet/yolo/
+# https://github.com/pjreddie/darknet/pull/1348/files
+
+#환경
+#Tx2     #opencv4.1.1
+#우분투   #cuda 10.1
+
+#다크넷 설치
+$ git clone https://github.com/pjreddie/darknet
+$ cd darknet
+
+#Makefile을 환경에 맞게 수정해야함
+
+-> 	GPU=1    #cuda jetpack설치 할때 포함되어있음 GPU연산을 위해 1
+	CUDNN=1  #cudnn cudnn은 별도로 설치해야하는거 같음 make시에 오류는 안나니 일단 1로 두기
+	OPENCV=1 #opencv 카메라 킬때 필요함 1
+	OPENMP=0
+	DEBUG=0
+
+-> https://github.com/pjreddie/darknet/pull/1348/files #opencv4버전을 사용하기위한 수정
+
+-> -gencode arch=compute_62,code=[sm_62,compute_62] #Makefile 상단부분 비슷한 문자열부분에 추가
+							       TX2 그래픽카드에 맞게 최적화해줌
+
+#Makefile 수정이 끝나면 make
+$ make
+
+#다크넷에서 지원하는 trained weight파일 다운 
+$ wget https://pjreddie.com/media/files/yolov3.weights
+
+#테스트 해보기
+./darknet detect cfg/yolov3.cfg yolov3.weights data/dog.jpg (cpu로 하는 테스트)
+
+./darknet -i 0 detector demo cfg/coco.data cfg/yolov3-tiny.cfg yolov3-tiny.weights "nvarguscamerasrc ! video/x-raw(memory:NVMM), width=(int)1280, height=(int)720, format=(string)NV12, framerate=(fraction)30/1 ! nvvidconv flip-method=4 ! video/x-raw, format=(string)BGRx ! videoconvert ! video/x-raw, format=(string)BGR ! appsink" (webcam)
+
+#이외에 옵션들
+인식 임계값 설정가능 ex) 13%이상들 보여주기
+		       ->./darknet detect cfg/yolov3.cfg yolov3.weights data/dog.jpg -thresh 13
+
+
+
