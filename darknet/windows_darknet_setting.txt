@@ -85,7 +85,7 @@
 
 		opencv_world401.dll       (opencv폴더에서 검색)
 		opencv_ffmpeg401_64.dll
-    		ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+    		ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
 		cusolver64_100.dll            (cuda폴더 에서 검색)
 		curand64_100.dll
 		cudart64_100.dll
