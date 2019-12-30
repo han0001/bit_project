@@ -1,4 +1,4 @@
-#참조 https://developer-thislee.tistory.com/19?category=818795
+﻿#참조 https://developer-thislee.tistory.com/19?category=818795
       https://developer-thislee.tistory.com/18?category=818795
 #원하는 weight file을 만들기 위해 전처리 과정으로 라벨링작업을 해야함.
 
@@ -97,14 +97,14 @@ $ ./darknet detector train data/obj.data cfg/yolov3.cfg darknet53.conv.74 -gpu 0
 ./darknet detector test data/obj.data cfg/yolov3.cfg backup/yolov3_16800.weights data/img/sample_image.jpg
  
 
-동영상 파일 테스트는,
+동영상 파일 테스트는
 ./darknet detector demo data/obj.data cfg/yolov3.cfg backup/(가중치 파일) (동영상 경로)/(동영상 파일)
 ( 동영상 확장자도 잊지 말고 같이 써주자. ex) .mp4 )
 ./darknet detector demo data/obj.data cfg/yolov3.cfg backup/(yolov3_16800.weights) (data/media)/(example.mp4)
 ./darknet detector demo data/obj.data cfg/yolov3.cfg backup/yolov3_16800.weights data/media/example.mp4
  
 
-테스트 웹캠은,
+테스트 웹캠은
 ./darknet detector demo data/obj.data cfg/yolov3.cfg backup/(가중치 파일)
 ./darknet detector demo data/obj.data cfg/yolov3.cfg backup/(yolov3_16800.weights)
 ./darknet detector demo data/obj.data cfg/yolov3.cfg backup/yolov3_16800.weights "nvarguscamerasrc ! video/x-raw(memory:NVMM), width=(int)1280, height=(int)720, format=(string)NV12, framerate=(fraction)30/1 ! nvvidconv flip-method=4 ! video/x-raw, format=(string)BGRx ! videoconvert ! video/x-raw, format=(string)BGR ! appsink"
