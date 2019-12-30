@@ -1,6 +1,6 @@
-# 참조
+﻿# 참조
 # https://pjreddie.com/darknet/yolo/
-# https://github.com/pjreddie/darknet/pull/1348/files
+# https://github.com/pjreddie/darknet/pull/1348/files/
 
 #환경
 #Tx2     #opencv4.1.1
